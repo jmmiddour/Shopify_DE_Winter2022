@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Image {{ image.name }}
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h2>&#128247; &nbsp; Image: <strong>{{ image.name }}</strong> &nbsp; &#128247;
+            </h2><br><hr><br>
+
+        <div id="wrapper-display1">
+
+            <img src="data:;base64,{{ display_img }}"
+                     alt="{{ image.name }}"
+                     height="90%" width="90%">
+
+        </div><br><hr><br>
+
+        <div id="wrapper-display2">
+
+            <strong>Type of Image:</strong> &nbsp; {{ image.img_type }}<br><br>
+            <strong>Is the Image shared Publicly?</strong> &nbsp;
+            {% if image.public == 1 %}
+                Yes, other users can see this Image.
+            {% elif image.public == 0 %}
+                No, only I can see this Image.
+            {% endif %}
+            <br><br>
+            <strong>Owner of this Image:</strong> &nbsp; {{ image.owner }}<br>
+
+        </div><br><hr><br>
+
+    {% endif %}
+
+{% endblock %}
