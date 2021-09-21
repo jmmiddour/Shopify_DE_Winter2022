@@ -38,7 +38,11 @@
 
                         <td>{{ row.first_name }} {{ row.last_name }}</td>
                         <td>{{ row.name }}</td>
-                        <td>{{ row.public }}</td>
+                        {% if row.public == 1 %}
+                            <td>Yes</td>
+                        {% elif row.public == 0 %}
+                            <td>No</td>
+                        {% endif %}
                         <td>{{ row.img_type }}</td>
                         <td>{{ row.owner }}</td>
 
