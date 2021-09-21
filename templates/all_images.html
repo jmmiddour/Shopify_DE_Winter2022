@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    View all Projects
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h1>All of {{ user }}'s Current Images</h1><br>
+
+        <p>On this page you can find all your images currently saved to your account.
+        If you need to edit or delete any images that are already saved, make a note
+        of the name of the image because you will need this to access the image.</p>
+
+        <table class="table table-striped">
+
+            <thead>
+            <tr>
+
+                {% for col in cols %}
+
+                    <th>{{ col }}</th>
+
+                {% endfor %}
+
+            </tr>
+            </thead>
+
+            <tbody>
+
+            {% for row in images %}
+
+                <tr>
+
+                    <td>{{ row.name }}</td>
+                    <td>
+                        <img src="data:{{ row.img_type }};base64,{{ row.img }}"
+                             alt="{{ row.name }}"
+                             height=50 width=70>
+                    </td>
+                    <td>{{ row.img_type }}</td>
+                    {% if row.public == 1 %}
+                        <td>Yes</td>
+                    {% elif row.public == 0 %}
+                        <td>No</td>
+                    {% endif %}
+                    <td>{{ row.owner }}</td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% endif %}
+
+{% endblock %}
