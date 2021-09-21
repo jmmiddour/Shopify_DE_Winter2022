@@ -5,6 +5,7 @@ from tempfile import mkdtemp
 from sqlalchemy import text
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
+from base64 import b64encode
 
 from utils.helpers import apology, login_required
 from utils.db_model import db, db_init, Image
@@ -381,9 +382,11 @@ def display(img_id):
     img = Image.query.filter_by(id=img_id).first()
 
     if not img:
-        return 'No Image has been found with that ID', 400
+        return apology('No Image has been found with that ID')
 
-    return Response(img.img, mimetype=img.img_type)
+    display_img = b64encode(img.img).decode('utf-8')
+
+    return render_template('display.html', image=img, display_img=display_img)
 
 
 # Create a route to delete an image
