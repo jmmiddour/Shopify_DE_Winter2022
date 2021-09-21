@@ -10,7 +10,7 @@ from base64 import b64encode
 from utils.helpers import apology, login_required
 from utils.db_model import db, db_init, Image
 from utils.queries import add_user, dup_user, get_user_id, get_last_ten, \
-    user_details, edit_user, dup_img, add_new_image, get_all
+    user_details, edit_user, dup_img, add_new_image, get_all, del_img
 
 # Initialize my application
 app = Flask(__name__)
@@ -375,31 +375,31 @@ def all_imgs():
     pass
 
 
-# Create a route for displaying a single image and details
-@app.route('/display/<img_id>')
-@login_required
-def display(img_id):
-    img = Image.query.filter_by(id=img_id).first()
-
-    if not img:
-        return apology('No Image has been found with that ID')
-
-    display_img = b64encode(img.img).decode('utf-8')
-
-    return render_template('display.html', image=img, display_img=display_img)
-
-
 # Create a route to delete an image
 @app.route('/remove', methods=['GET', 'POST'])
 @login_required
 def remove():
-    pass
+    """
+    Functionality for the user to remove a project from their account
+    """
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
 
+    # Query a list of all projects on the user's account
+    images = get_all(session.get("user_id"))
 
-# # Set up route to display image
-# @app.route('/<int:id>')
-# def get_img(id):
-#
+    # Get a list of all project names
+    user_imgs = [row[1] for row in images]
+
+    # Remove the project user selects
+    if request.method == "POST":
+        del_img(request.form.get('name'), session.get('user_id'))
+        flash(f'Image "{request.form.get("name")}" has been successfully removed!')
+        return redirect('/')
+
+    return render_template('remove.html', names=user_imgs)
 
 
 # Make it easier to run the application from the terminal
