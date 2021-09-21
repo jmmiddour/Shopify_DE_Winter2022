@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h1>Welcome back to your PhotOPT, {{ first }}!</h1><br>
+
+        <h4>Here are some details of your 10 most recently added images.</h4><br>
+
+        <p>This is just a snapshot of the imaged you have added.</p><br>
+
+        <table class="table table-striped">
+
+            <thead>
+
+                <tr>
+
+                    <th>User Name</th>
+                    <th>Image Name</th>
+                    <th>Public Y/N</th>
+                    <th>Image Type</th>
+                    <th>Owner of Image</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for row in imgs %}
+
+                    <tr>
+
+                        <td>{{ row.first_name }} {{ row.last_name }}</td>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.public }}</td>
+                        <td>{{ row.img_type }}</td>
+                        <td>{{ row.owner }}</td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% endif %}
+
+{% endblock %}
