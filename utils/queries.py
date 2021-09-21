@@ -211,7 +211,7 @@ def get_all(user_id):
     """
     all_imgs = db.engine.execute(text(
         """
-        SELECT id, name, img_type, public, owner
+        SELECT *
         FROM "image"
         WHERE user_id = :user_id;
         """), user_id=user_id).all()
