@@ -53,8 +53,8 @@ class Image(db.Model):
     img = db.Column(db.Text, unique=True, nullable=False)
     name = db.Column(db.Text, nullable=False)
     img_type = db.Column(db.Text, nullable=False)
-    public = db.column(db.BOOLEAN, nullable=False)
-    owner = db.column(db.String, nullable=False)
+    public = db.column(db.BOOLEAN)
+    owner = db.column(db.String)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('image', lazy=True))
 
