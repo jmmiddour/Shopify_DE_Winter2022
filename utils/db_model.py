@@ -50,7 +50,7 @@ class Image(db.Model):
         - owner    : *str*  : who the image was take by or where it came from
     """
     id = db.Column(db.Integer, primary_key=True)
-    img = db.Column(db.Text, unique=True, nullable=False)
+    img = db.Column(db.Text, nullable=False)
     name = db.Column(db.Text, nullable=False)
     img_type = db.Column(db.Text, nullable=False)
     public = db.Column(db.BOOLEAN, nullable=False)
