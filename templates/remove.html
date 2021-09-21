@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Remove a Project
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h2>Permanently Remove an Image from your Account</h2><br>
+
+        <p><strong>NOTE:</strong><br>Make sure you want to remove the selected Image
+            before clicking the submit button.<br>
+            Once an image is removed, this action <strong><em>can not</em></strong>
+            be undone.</p><br>
+
+        <form action="/remove" method="post">
+
+            <div>
+                <label>
+                    <strong>Select the Name of the Image you want to Remove:</strong>
+                </label>
+                <select class="form-control" name="name">
+                    <option disabled selected value>Image Name</option>
+                    {% for val in names %}
+                        <option value="{{ val }}">{{ val }}</option>
+                    {% endfor %}
+                </select>
+            </div><br>
+
+            <br>
+            <button class="btn btn-primary" type="submit">
+                Permanently Remove Selected Image</button>
+            <br>
+
+        </form>
+
+    {% endif %}
+
+{% endblock %}
