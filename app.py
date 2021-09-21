@@ -9,7 +9,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from utils.helpers import apology, login_required
 from utils.db_model import db, db_init, Image
 from utils.queries import add_user, dup_user, get_user_id, get_last_ten, \
-    user_details, edit_user, dup_img, add_new_image
+    user_details, edit_user, dup_img, add_new_image, get_all
 
 # Initialize my application
 app = Flask(__name__)
@@ -340,7 +340,31 @@ def upload():
 @app.route('/select', methods=['GET', 'POST'])
 @login_required
 def select():
-    pass
+    """
+    Functionality to display just one image in the users account
+    """
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
+
+    # Create a list of project names for dropdown selection
+    images = get_all(session.get("user_id"))
+    user_imgs = [row[1] for row in images]
+
+    if request.method == "POST":
+        if request.form.get('image') is None:
+            return apology(
+                'Whoops, You forgot to Select an Image.\n'
+                'Please go back and try again.')
+        # Get the image id of the selected image
+        img_id = db.session.query(Image.id).filter(
+            Image.name == request.form.get("image")).one()
+        # Redirect user to the edit page
+        return redirect(f'/display/{img_id[0]}')
+
+    # If the request method is 'GET' show the form to add a project
+    return render_template('select.html', names=user_imgs)
 
 
 # Create a route for displaying all images currently in database
