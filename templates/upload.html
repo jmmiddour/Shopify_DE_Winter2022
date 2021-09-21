@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h1>Upload a New Image to your Account</h1><br>
+
+        <p><strong>Please Note:</strong> All fields are Required</p>
+
+        <br><hr><br>
+
+        <form action="/upload" enctype="multipart/form-data" method="POST">
+
+            <div class="form-group">
+
+                Add the image file you want to upload:
+                <input class="form-control"
+                       type="file" name="pic"
+                       style="height: 46px" required>
+
+            </div><br><hr><br>
+
+            <div class="form-group">
+
+                <label>
+                    Can this image be shared publicly with other users?<br>
+                    ~ Or ~<br>Do you want it to remain private and can only be accessed with
+                    your user account?<br><br>
+                </label>
+
+                <select autofocus class="form-control" name="public"
+                        required>
+                    <option selected disabled>
+                        Select an Option
+                    </option>
+                    <option value="True">
+                        Yes, I will allow my image to be shared Publicly
+                    </option>
+                    <option value="False">
+                        No, I do not want my image public. Keep Private Only!
+                    </option>
+                </select><br>
+
+            </div><br><hr><br>
+
+            <div class="form-group">
+
+                Name of or Link to Owner of the photo:
+                <input autofocus
+                       class="form-control"
+                       name="owner"
+                       placeholder="Image Owner" required>
+
+            </div><br><hr><br>
+
+            <button class="btn btn-primary"
+                        type="button"
+                        name="cancel"
+                        onclick="window.history.back()"
+                        style="background-color: darkred;
+                        border: red; color: ghostwhite">
+                    Cancel</button>
+
+                <button class="btn btn-primary"
+                        type="reset"
+                        style="background-color: orange;
+                        color: darkblue; border: orange">
+                    Reset</button>
+
+            <button class="btn btn-primary" type="submit">Add Image</button>
+
+        </form>
+
+    {% endif %}
+
+{% endblock %}
