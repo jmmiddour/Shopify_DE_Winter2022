@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit a Project
+{% endblock %}
+
+{% block main %}
+
+    {% if session.user_id %}
+
+        <h2>Select an Image from your Account to Display</h2><br>
+
+        <form action="/select" method="post">
+
+            <p>Select which image you would like to see:</p>
+
+            <select name="image" id="image_names">
+
+                <option selected disabled>Select an Image Name</option>
+
+                {% for val in names %}
+                    <option value="{{ val }}">{{ val }}</option>
+                {% endfor %}
+
+            </select><br><br><br>
+
+            <br>
+            <button class="btn btn-primary" type="submit">Show Image</button>
+            <br>
+
+        </form>
+
+    {% endif %}
+
+{% endblock %}
