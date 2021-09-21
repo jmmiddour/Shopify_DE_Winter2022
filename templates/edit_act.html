@@ -13,7 +13,8 @@
         <form action="/edit_act" method="post">
 
             <div class="form-group">
-                First Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                First Name:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <input autofocus
                        class="form-control" name="first_name"
                        value="{{ user.first_name }}"
@@ -21,7 +22,8 @@
             </div>
 
             <div class="form-group">
-                Last Name: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                Last Name:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <input autofocus
                        class="form-control"
                        name="last_name" value="{{ user.last_name }}"
@@ -29,34 +31,38 @@
             </div>
 
             <div class="form-group">
-                Username: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                Username:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <input class="form-control"
                        value="{{ user.username }}"
                        type="text" disabled>
             </div>
 
             <div class="form-group">
-                New Password: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+                New Password:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
                 <input class="form-control"
                        name="password"
                        placeholder="New Password"
-                       type="password">
+                       type="password" style="width: 230px">
             </div>
 
             <div class="form-group">
-                Confirm New Password: &nbsp;&nbsp;
+                Confirm New Password:
+                &nbsp; &nbsp; &nbsp;&nbsp;
                 <input class="form-control"
                        name="confirmation"
                        placeholder="Confirm Your New Password"
-                       type="password">
+                       type="password" style="width: 230px">
             </div>
 
             <div class="form-group">
-                Email Address: &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                Email Address:
+                &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <input class="form-control"
                        name="email"
                        value="{{ user.email }}"
-                       type="text">
+                       type="text" style="width: 230px">
             </div><br>
 
             <div id="wrapper"
