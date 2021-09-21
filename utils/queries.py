@@ -1,6 +1,6 @@
 from sqlalchemy import text
 
-from utils.db_model import db, User, Image
+from .db_model import db, User, Image
 
 
 def dup_user(name):
@@ -14,6 +14,24 @@ def dup_user(name):
         bool: True if username already in database; False if not found
     """
     if db.session.query(User.id).filter(User.username == name).count() > 0:
+        db.session.close()
+        return True
+
+    else:
+        return False
+
+
+def dup_email(email):
+    """
+    Look for a duplicate email address in the data base
+
+    :param
+        email: str: email address entered by user
+
+    :return:
+        bool: True if email already in database; False if not found
+    """
+    if db.session.query(User.email).filter(User.email == email).count() > 0:
         db.session.close()
         return True
 
