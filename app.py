@@ -298,7 +298,7 @@ def upload():
         if pic is None:
             return apology('No image was submitted.\nPlease try again.')
 
-        filename = secure_filename(pic.filename)
+        filename = request.form.get('name')
         img_type = pic.mimetype.split('/')
         print(img_type)
 
@@ -317,9 +317,11 @@ def upload():
             if request.form.get('public') == 'False':
                 public = False
 
+            img = b64encode(pic.read()).decode('utf-8')
+
             # Create a dictionary to store details of image upload
             img_dict = {
-                'img': pic.read(), 'name': filename, 'img_type': img_type[1],
+                'img': img, 'name': filename, 'img_type': img_type[1],
                 'public': public,
                 'owner': request.form.get('owner'),
                 'user_id': user_id
@@ -351,7 +353,7 @@ def select():
 
     # Create a list of project names for dropdown selection
     images = get_all(session.get("user_id"))
-    user_imgs = [row[1] for row in images]
+    user_imgs = [row[2] for row in images]
 
     if request.method == "POST":
         if request.form.get('image') is None:
@@ -372,7 +374,40 @@ def select():
 @app.route('/all_imgs')
 @login_required
 def all_imgs():
-    pass
+    """
+    Functionality to view all the images currently in the user's account
+    """
+    # Check to make sure the user is already logged in
+    if not session.get("user_id"):
+        # If not logged in, redirect the user to the login page
+        return redirect("/login")
+
+    # Get user's first name
+    first = db.engine.execute(text(
+        'SELECT first_name FROM "user" WHERE id = :user_id'
+    ), user_id=session.get("user_id")).one()
+
+    # Query a list of all images on the user's account
+    images = get_all(session.get("user_id"))
+
+    # Create a list of all column names to display
+    cols = ['Image Name', 'Image', 'Type of Image', 'Public (Y/N)', 'Image Owner']
+
+    return render_template('all_images.html', images=images,
+                           cols=cols, user=first[0])
+
+
+# Create a route for displaying a single image and details
+@app.route('/display/<img_id>')
+@login_required
+def display(img_id):
+    img = Image.query.filter_by(id=img_id).first()
+
+    if not img:
+        # return 'No Image has been found with that ID', 400
+        return apology('No Image has been found with that ID')
+
+    return render_template('display.html', image=img)
 
 
 # Create a route to delete an image
@@ -391,7 +426,7 @@ def remove():
     images = get_all(session.get("user_id"))
 
     # Get a list of all project names
-    user_imgs = [row[1] for row in images]
+    user_imgs = [row[2] for row in images]
 
     # Remove the project user selects
     if request.method == "POST":
