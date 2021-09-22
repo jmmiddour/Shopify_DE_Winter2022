@@ -7,9 +7,9 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash, generate_password_hash
 from base64 import b64encode
 
-from utils.helpers import apology, login_required
-from utils.db_model import db, db_init, Image
-from utils.queries import add_user, dup_user, get_user_id, get_last_ten, \
+from .utils.helpers import apology, login_required
+from .utils.db_model import db, db_init, Image
+from .utils.queries import add_user, dup_user, get_user_id, get_last_ten, \
     user_details, edit_user, dup_img, add_new_image, get_all, del_img, dup_email
 
 # Initialize my application
@@ -26,7 +26,7 @@ def config_routes(app):
     app.config['TEMPLATES_AUTO_RELOAD'] = True
 
     # Configure session to use filesystem (instead of signed cookies)
-    # Will store the session on the users disk vs digitially signed cookies,
+    # Will store the session on the users disk vs digitally signed cookies,
     #   which is done by default with Flask
     app.config["SESSION_FILE_DIR"] = mkdtemp()
     app.config["SESSION_PERMANENT"] = False
@@ -111,7 +111,7 @@ def config_routes(app):
             if password != conf_pass:
                 return apology("Your passwords do not match.\nPlease try again!")
 
-            # If that username is already in the data base
+            # If username is already in the data base
             if dup_user(name):
                 return apology(
                     "Username already exists.\nLog in or try another username."
@@ -131,7 +131,6 @@ def config_routes(app):
 
                 # Get the row where the username is in the data base
                 rows = get_user_id(name)
-                print(rows)
 
                 # Ensure username exists and password is correct
                 if len(rows) != 1 or not check_password_hash(
@@ -145,7 +144,7 @@ def config_routes(app):
                 session["user_id"] = rows[0]['id']
 
                 # Display a message on the home page to let the user know their
-                #   project was successfully added to the database
+                #   registration was successfully added to the database
                 flash(
                     f'Your registration is complete and you have been logged in successfully!'
                 )
@@ -189,8 +188,8 @@ def config_routes(app):
             #   row in the rows list and grabbing the value from the "id" column
             session["user_id"] = row[0]["id"]
 
-            # Display a message on the home page to let the user know their
-            #   project was successfully added to the database
+            # Display a message on the home page to let the user know they
+            #   have been successfully logged in to their account
             flash(f'You have been logged in successfully!')
             # Redirect user to home page
             return redirect('/')
@@ -236,7 +235,7 @@ def config_routes(app):
         user = user_details(session.get("user_id"))
 
         # Iterate through the dictionary to add the values from the database for
-        #   the project specified
+        #   the user's account information
         i = 0  # Create a counter to increment
         for k, _ in user_dict.items():
             # Change the value in the dictionary to the value at the current location
@@ -246,7 +245,9 @@ def config_routes(app):
         if request.method == "POST":
             # Iterate through the dictionary of project parameters
             for key, val in user_dict.items():
+                # Make sure we are not at the key for id or username
                 if key != 'id' and key != 'username':
+                    # Check if we are at the password key in the dictionary
                     if key == 'password':
                         # Get user's new password
                         password = request.form.get('password')
@@ -270,11 +271,11 @@ def config_routes(app):
                     # Otherwise, continue iterating and change nothing
                     user_dict[key] = user_dict[key]
 
-            # Add the new project to the database using function from queries.py
+            # Add the new account details to the database using function from queries.py
             edit_user(user_dict)
 
             # Display a message on the home page to let the user know their
-            #   project was successfully added to the database
+            #   account was successfully edited in the database
             flash(f'Your account has been edited successfully!')
             # Redirect user to the home page
             return redirect('/')
@@ -294,30 +295,35 @@ def config_routes(app):
 
         if request.method == "POST":
 
+            # Get the information and BLOB data for the uploaded image
             pic = request.files['pic']
 
             if pic is None:
                 return apology('No image was submitted.\nPlease try again.')
 
+            # Get the preferred file name the user entered
             filename = request.form.get('name')
+            # Grab the type of image from the meta data of the image
             img_type = pic.mimetype.split('/')
-            print(img_type)
 
-            # If project name is already in the data base
+            # If image name is already in the data base
             if dup_img(filename, user_id):
                 return apology(
                     "This is not a Unique File Name.\nPlease change the file name and try again."
                 )
 
             else:
+                # Set up a variable for the public bool
                 public = None
 
+                # Get user's answer for public
                 if request.form.get('public') == 'True':
                     public = True
 
                 if request.form.get('public') == 'False':
                     public = False
 
+                # Decode the image file for future display
                 img = b64encode(pic.read()).decode('utf-8')
 
                 # Create a dictionary to store details of image upload
@@ -328,11 +334,11 @@ def config_routes(app):
                     'user_id': user_id
                 }
 
-                # Add the new project to the database using function from queries.py
+                # Add the new image to the database using function from queries.py
                 add_new_image(img_dict)
 
                 # Display a message on the home page to let the user know their
-                #   project was successfully added to the database
+                #   image was successfully added to the database
                 flash(f'Your Image "{filename}" has been added successfully!')
                 # Redirect user to the home page
                 return redirect('/')
@@ -351,22 +357,25 @@ def config_routes(app):
             # If not logged in, redirect the user to the login page
             return redirect("/login")
 
-        # Create a list of project names for dropdown selection
+        # Create a list of image names for dropdown selection
         images = get_all(session.get("user_id"))
         user_imgs = [row[2] for row in images]
 
         if request.method == "POST":
+            # Check that user selected an image name
             if request.form.get('image') is None:
                 return apology(
                     'Whoops, You forgot to Select an Image.\n'
                     'Please go back and try again.')
+
             # Get the image id of the selected image
             img_id = db.session.query(Image.id).filter(
                 Image.name == request.form.get("image")).one()
-            # Redirect user to the edit page
+
+            # Redirect user to the display page
             return redirect(f'/display/{img_id[0]}')
 
-        # If the request method is 'GET' show the form to add a project
+        # If the request method is 'GET' show the form to view an image
         return render_template('select.html', names=user_imgs)
 
     # Create a route for displaying all images currently in database
@@ -390,7 +399,8 @@ def config_routes(app):
         images = get_all(session.get("user_id"))
 
         # Create a list of all column names to display
-        cols = ['Image Name', 'Image', 'Type of Image', 'Public (Y/N)', 'Image Owner']
+        cols = ['Image Name', 'Image', 'Type of Image',
+                'Public (Y/N)', 'Image Owner']
 
         return render_template('all_images.html', images=images,
                                cols=cols, user=first[0])
@@ -402,7 +412,6 @@ def config_routes(app):
         img = Image.query.filter_by(id=img_id).first()
 
         if not img:
-            # return 'No Image has been found with that ID', 400
             return apology('No Image has been found with that ID')
 
         return render_template('display.html', image=img)
@@ -419,13 +428,13 @@ def config_routes(app):
             # If not logged in, redirect the user to the login page
             return redirect("/login")
 
-        # Query a list of all projects on the user's account
+        # Query a list of all images on the user's account
         images = get_all(session.get("user_id"))
 
-        # Get a list of all project names
+        # Get a list of all image names
         user_imgs = [row[2] for row in images]
 
-        # Remove the project user selects
+        # Remove the image user selects
         if request.method == "POST":
             del_img(request.form.get('name'), session.get('user_id'))
             flash(f'Image "{request.form.get("name")}" has been successfully removed!')
