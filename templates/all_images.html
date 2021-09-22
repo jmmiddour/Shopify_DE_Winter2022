@@ -1,19 +1,25 @@
+<!-- Extend code from the layout file to ensure uniform formatting -->
 {% extends "layout.html" %}
 
+<!-- Added to block title in layout.html for name of tab on user's browser -->
 {% block title %}
     View all Projects
 {% endblock %}
 
 {% block main %}
 
-    {% if session.user_id %}
+<!-- Verifies the user is logged in -->
+{% if session.user_id %}
 
-        <h1>All of {{ user }}'s Current Images</h1><br>
+    <!-- Title of this page -->
+    <h1>All of {{ user }}'s Current Images</h1><br>
 
-        <p>On this page you can find all your images currently saved to your account.
+    <!-- Description about the page -->
+    <p>On this page you can find all your images currently saved to your account.
         If you need to edit or delete any images that are already saved, make a note
         of the name of the image because you will need this to access the image.</p>
 
+        <!-- Populates a table with 10 most recently added images -->
         <table class="table table-striped">
 
             <thead>
