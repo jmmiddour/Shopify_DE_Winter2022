@@ -250,7 +250,7 @@ def del_img(img_name, user_id):
     :return:
         Database with the record removed that had the given id.
     """
-    # Get the project id from the parameters given
+    # Get the image id from the parameters given
     img_id = db.engine.execute(
         text("""
         SELECT id
@@ -258,7 +258,7 @@ def del_img(img_name, user_id):
         WHERE name = :name AND user_id = :user;
         """), name=img_name, user=user_id).one()
 
-    # Remove the project record from both tables
+    # Remove the image record from the table
     db.engine.execute(
         text("""
             DELETE FROM "image"
